@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: kubernetes-brief
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: sengsathit/brief-mysql:latest
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-database
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - "-h"
+                - "127.0.0.1"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
