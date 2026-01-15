@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Kubernetes / env
+.env
+.env.*
+*.log
+
+# Python (si jamais)
+__pycache__/
+*.pyc
