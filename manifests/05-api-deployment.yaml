@@ -37,6 +37,11 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: mysql-database
+            # Explicit override to avoid Kubernetes service env conflicts
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_PORT
+              value: "3306"
           readinessProbe:
             httpGet:
               path: /health
